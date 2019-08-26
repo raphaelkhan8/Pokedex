@@ -1,14 +1,14 @@
-const sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 // set up the database connection
-const poke = new Sequelize('pokemon', 'root', '', {
-  host: '',
-  port: 3306,
+
+const sequelize = new Sequelize('pokemon', 'root', '', {
+  port: process.env.PORT || 3306,
   dialect: 'mysql',
 });
 
 // test the db connection
-poke.authenticate()
+sequelize.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
   })
