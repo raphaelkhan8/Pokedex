@@ -25,7 +25,7 @@ const Users = sequelize.define('users', {
 }, {
   timestamps: false,
 });
-
+Users.sync();
 
 // make a pokemon table
 const Pokemon = sequelize.define('pokemon', {
@@ -42,7 +42,7 @@ const Pokemon = sequelize.define('pokemon', {
     type: Sequelize.STRING,
   },
 });
-
+Pokemon.sync();
 
 // make a joint users/pokemon table
 const UsersPokemon = sequelize.define('users_pokemon', {
@@ -53,11 +53,12 @@ const UsersPokemon = sequelize.define('users_pokemon', {
     type: Sequelize.INTEGER(11),
   },
 });
-
+UsersPokemon.sync();
 
 module.exports.Users = Users;
 module.exports.Pokemon = Pokemon;
 module.exports.UsersPokemon = UsersPokemon;
+
 
 // mySQL connection without sequlize:
 // const mysql = require('mysql');
