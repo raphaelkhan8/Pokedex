@@ -8,6 +8,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: '',
       query: '',
       items: [],
     };
@@ -39,19 +40,34 @@ class App extends React.Component {
     });
   }
 
+  handleSignIn() {
+  }
+
   handleSearch() {
   }
 
+  handleBattle() {
+  }
+
   render() {
-    const { query, items } = this.state;
+    const { user, query, items } = this.state;
 
     return (
       <div>
         <h1>PokeDex</h1>
+        <div id="sign-in">
+          <h2>Sign In</h2>
+          <input type="text" id="signin-bar" value={user} onChange={this.handleChange} />
+          <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
+        </div>
         <div id="search">
-          <h1>Search for Pokemon</h1>
+          <h2>Search for Pokemon</h2>
           <input type="text" id="search-bar" value={query} onChange={this.handleChange} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
+        </div>
+        <div id="battle">
+          <h2>PokeBattle!!!</h2>
+          <button type="button" id="battle-button" onClick={this.handleBattle}>Catch the searched Pokemon by battling it!</button>
         </div>
         <List items={items} />
       </div>
