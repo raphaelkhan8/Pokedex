@@ -26,6 +26,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.16.4",
     "mysql": "^2.13.0",
+    "mysql2": "^1.6.5",
     "prop-types": "^15.7.2",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
