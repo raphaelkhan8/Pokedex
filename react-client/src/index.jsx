@@ -8,9 +8,12 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      query: '',
       items: [],
     };
     this.getItems = this.getItems.bind(this);
+    this.handleChange = this.handleChange(this);
+    this.handleSearch = this.handleSearch(this);
   }
 
   componentDidMount() {
@@ -30,12 +33,26 @@ class App extends React.Component {
       .then(response => response.data);
   }
 
+  handleChange(event) {
+    this.setState({
+      query: event.target,
+    });
+  }
+
+  handleSearch() {
+  }
+
   render() {
-    const { items } = this.state;
+    const { query, items } = this.state;
 
     return (
       <div>
-        <h1>Item List</h1>
+        <h1>PokeDex</h1>
+        <div id="search">
+          <h1>Search for Pokemon</h1>
+          <input type="text" id="search-bar" value={query} onChange={this.handleChange} />
+          <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
+        </div>
         <List items={items} />
       </div>
     );
