@@ -1,14 +1,29 @@
-DROP DATABASE IF EXISTS test;
+DROP DATABASE IF EXISTS pokemon;
 
-CREATE DATABASE test;
+CREATE DATABASE pokemon;
 
-USE test;
+USE pokemon;
 
-CREATE TABLE items (
+CREATE TABLE IF NOT EXISTS Users (
   id int NOT NULL AUTO_INCREMENT,
-  quantity integer NOT NULL,
-  description varchar(50) NOT NULL,
+  username varchar(255) NOT NULL,
+  record  int NOT NULL,
   PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS Pokemon (
+  id int NOT NULL AUTO_INCREMENT,
+  pokename varchar(255) NOT NULL,
+  descript varchar(255) NOT NULL,
+  imageurl varchar(255) NOT NULL,
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS users_pokemon (
+  user_id int NOT NULL,
+  pokemon_id int NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(ID),
+  FOREIGN KEY (pokemon_id) REFERENCES Pokemon(ID)
 );
 
 /*  Execute this file from the command line by typing:
