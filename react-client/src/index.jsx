@@ -11,12 +11,15 @@ class App extends React.Component {
       userInput: '',
       query: '',
       pokemon: {
-        name: '',
+        pokename: '',
+        powerLevel: 0,
+        description: '',
+        imageUrl: '',
       },
       items: [],
     };
-    this.handleUser = this.handleUser.bind(this);
-    this.handleSearchBox = this.handleSearchBox.bind(this);
+    this.handleUserInput = this.handleUserInput.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleBattle = this.handleBattle.bind(this);
@@ -35,13 +38,13 @@ class App extends React.Component {
     //   });
   }
 
-  handleUser(event) {
+  handleUserInput(event) {
     this.setState({
       userInput: event.target.value,
     });
   }
 
-  handleSearchBox(event) {
+  handleSearchInput(event) {
     console.log(event.target.value);
     this.setState({
       query: event.target.value,
@@ -49,30 +52,19 @@ class App extends React.Component {
   }
 
   handleSignIn() {
-    console.log('THIS NEEDS TO BE BUILT OUT');
-    // send a POST to /login
+    console.log('Is this the input user?');
     const { userInput } = this.state;
-    // this will find or create the user
-    axios.post(`/login/${userInput}`)
+    axios.post(`/sign-in/${userInput}`)
       .then((response) => {
         this.setState({
-          user: response.data,
+          userInput: response.data,
         });
       })
       .then(() => {
-        const { user } = this.state;
-        // now need to get the user's pokemon array
-        axios.get(`/pokedex/${user}`)
-          .then((res) => {
-            // res.data should be an array of user's pokemon
-            this.setState({
-              pokemon: res.data,
-              userInput: '',
-            });
-          });
+        console.log('Users pokemon still needs to be gotten');
       })
       .catch((err) => {
-        console.log(err);
+        console.log('Error while signing in. See line 67 index.jsx', err);
       });
   }
 
@@ -90,7 +82,7 @@ class App extends React.Component {
 
   render() {
     const {
-      user, userInput, query, pokemon, items,
+      userInput, query, pokemon, items,
     } = this.state;
 
     return (
@@ -98,13 +90,13 @@ class App extends React.Component {
         <h1>PokeDex</h1>
         <div id="sign-in">
           <h2>Sign In</h2>
-          <input type="text" id="signin-bar" value={userInput} onChange={this.handleUser} />
+          <input type="text" id="signin-bar" value={userInput} onChange={this.handleUserInput} />
           <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
           <p>Signed in as: {userInput}</p>
         </div>
         <div id="search">
           <h2>Search for Pokemon</h2>
-          <input type="text" id="search-bar" value={query} onChange={this.handleSearchBox} />
+          <input type="text" id="search-bar" value={query} onChange={this.handleSearchInput} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
           <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
         </div>
