@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -33,22 +34,37 @@ app.get('/search', (req, res) => {
   const { name } = req.query;
   axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     // response is an object which a data property that is an object with all the data we want
-    // need to get back following properties: name, base_experience, sprites and species.url
-    // species.url contains the pokemon's description but in a ton of lanhuages so need to filter
-    // out english translated description
+    // need to get back following properties: name, base_experience, sprites and description
+    // data.species.url is another page so I need to make another get request for the description >:(
     .then((response) => {
-      console.log(response.data);
-      console.log(response.data.name);
-      console.log(response.data.base_experience);
-      console.log(response.data.sprites.front_default);
-      console.log(response.data.species.url);
-      console.log('hiiii');
-      const pokeData = {};
-      pokeData.name = response.data;
-      pokeData.powerLevel = response.data.base_experience;
-      pokeData.imageUrl = response.data.sprites.front_default;
-      pokeData.description = response.data.species.url;
-      res.json(pokeData);
+      axios.get(`${response.data.species.url}`)
+        .then((descriptions) => {
+          // descriptionsArr is an array with a ton of objects each containing the pokemon's description
+          // but in a ton of lanhuages so need to filter by language and then en(for English)
+          const descriptionsArr = descriptions.data.flavor_text_entries;
+          const englishDescription = [];
+          for (let i = 0; i < descriptionsArr.length; i += 1) {
+            for (const key in descriptionsArr[i]) {
+              if (key === 'language') {
+                if (descriptionsArr[i].language.name === 'en') {
+                  englishDescription.push(descriptionsArr[i].flavor_text);
+                }
+              }
+            }
+          }
+          console.log(response.data);
+          console.log(response.data.name);
+          console.log(response.data.base_experience);
+          console.log(response.data.sprites.front_default);
+          console.log(englishDescription);
+          console.log('hiiii');
+          const pokeData = {};
+          pokeData.name = response.data.name;
+          pokeData.powerLevel = response.data.base_experience;
+          pokeData.imageUrl = response.data.sprites.front_default;
+          pokeData.description = englishDescription;
+          res.json(pokeData);
+        });
     })
     .catch((err) => {
       console.error('Error when getting data from api. See line 54 server/index.js', err);
