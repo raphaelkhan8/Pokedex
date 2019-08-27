@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ListItem = ({ item }) => (
+const ListItem = ({ pokeItem }) => (
   <div>
-    { item.description }
+    <img src={pokeItem.imageUrl} alt="fail" />
   </div>
 );
 
 ListItem.propTypes = {
-  item: PropTypes.shape({
-
-  }).isRequired,
+  pokeItem: PropTypes.objectOf(PropTypes.shape({
+    imageUrl: PropTypes.string,
+  })).isRequired,
 };
 
 export default ListItem;

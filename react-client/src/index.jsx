@@ -10,12 +10,12 @@ class App extends React.Component {
     this.state = {
       userInput: '',
       query: '',
-      pokemon: {
+      pokemon: [{
         pokename: '',
         powerLevel: 0,
         description: '',
         imageUrl: '',
-      },
+      }],
       items: [],
     };
     this.handleUserInput = this.handleUserInput.bind(this);
@@ -70,6 +70,17 @@ class App extends React.Component {
 
   handleSearch() {
     console.log('searched');
+    const { query } = this.state;
+    // Make a request for the given pokemon
+    return axios.get(`/search/?name=${query}`)
+      .then((res) => {
+        this.setState({
+          pokemon: res.data,
+          query: '',
+        });
+      }).catch((err) => {
+        console.error('Search error. See line 82 index.jsx', err);
+      });
   }
 
   addPokemon() {
@@ -104,7 +115,8 @@ class App extends React.Component {
           <h2>PokeBattle!!!</h2>
           <button type="button" id="battle-button" onClick={this.handleBattle}>Catch the searched Pokemon by battling it!</button>
         </div>
-        <List items={items} />
+        <h2>My Pokemon</h2>
+        <List pokemon={pokemon} />
       </div>
     );
   }
