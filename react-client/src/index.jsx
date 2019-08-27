@@ -10,13 +10,13 @@ class App extends React.Component {
     this.state = {
       userInput: '',
       query: '',
-      pokemon: [{
+      pokemon: {
         pokename: '',
         powerLevel: 0,
         description: '',
         imageUrl: '',
-      }],
-      items: [],
+      },
+      pokeItems: [],
     };
     this.handleUserInput = this.handleUserInput.bind(this);
     this.handleSearchInput = this.handleSearchInput.bind(this);
@@ -61,10 +61,18 @@ class App extends React.Component {
         });
       })
       .then(() => {
-        console.log('Users pokemon still needs to be gotten');
+        const { user } = this.state;
+        axios.get(`/pokemvp/${user}`)
+          .then((res) => {
+            // res.data should be an array of user's pokemon
+            this.setState({
+              pokeItems: res.data,
+              userInput: '',
+            });
+          });
       })
       .catch((err) => {
-        console.log('Error while signing in. See line 67 index.jsx', err);
+        console.log('Error while signing in. See line 75 index.jsx', err);
       });
   }
 
@@ -84,6 +92,16 @@ class App extends React.Component {
   }
 
   addPokemon() {
+    const { userInput, pokemon } = this.state;
+    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', userInput);
+    axios.post(`/pokemvp/${userInput}`, pokemon)
+      .then(() => axios.get(`/pokemvp/${userInput}`))
+      .then((res) => {
+        // res.data should be an array of user's pokemon
+        this.setState({
+          pokeItems: res.data,
+        });
+      });
     console.log('pokemon was added');
   }
 
@@ -93,7 +111,7 @@ class App extends React.Component {
 
   render() {
     const {
-      userInput, query, pokemon, items,
+      userInput, query, pokemon, pokeItems,
     } = this.state;
 
     return (
@@ -103,20 +121,28 @@ class App extends React.Component {
           <h2>Sign In</h2>
           <input type="text" id="signin-bar" value={userInput} onChange={this.handleUserInput} />
           <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
-          <p>Signed in as: {userInput}</p>
         </div>
+        <p><b>{userInput}</b> is signed-in.</p>
         <div id="search">
           <h2>Search for Pokemon</h2>
           <input type="text" id="search-bar" value={query} onChange={this.handleSearchInput} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
-          <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
+          <button type="button" id="add-pokemon-button" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
+          <div>
+            {console.log('pokemon searched:', pokemon)}
+            <h2>{pokemon.name}</h2>
+            <img src={pokemon.imageUrl} alt="" />
+            <p>{pokemon.description}</p>
+            <p>Power Level: {pokemon.powerLevel}</p>
+            <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
+          </div>
         </div>
         <div id="battle">
           <h2>PokeBattle!!!</h2>
           <button type="button" id="battle-button" onClick={this.handleBattle}>Catch the searched Pokemon by battling it!</button>
         </div>
         <h2>My Pokemon</h2>
-        <List pokemon={pokemon} />
+        <List pokeItems={pokeItems} />
       </div>
     );
   }

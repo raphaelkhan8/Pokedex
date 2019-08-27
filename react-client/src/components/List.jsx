@@ -7,16 +7,16 @@ import ListItem from './ListItem.jsx';
 // import uuid to generate random key for each pokeItem
 const id = uuid.v4();
 
-const List = ({ pokemon }) => (
+const List = ({ pokeItems }) => (
   <div>
-    <h4> List Component </h4>
-    There are { pokemon.length } items.
-    { pokemon.map(pokeItem => <ListItem pokeItem={pokeItem} key={id} />)}
+    <h4> My Pokemon Collection </h4>
+    There are { pokeItems.length } pokemon in your pokedex.
+    { pokeItems.map(pokeItem => <ListItem pokeItem={pokeItem} key={id} />)}
   </div>
 );
 
 List.propTypes = {
-  pokemon: PropTypes.arrayOf(PropTypes.shape({
+  pokeItems: PropTypes.arrayOf(PropTypes.shape({
     pokeName: PropTypes.string,
     powerLevel: PropTypes.number,
     description: PropTypes.string,
