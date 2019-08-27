@@ -19,7 +19,10 @@ app.use(express.static(path.join(__dirname, '../react-client/dist')));
 // POST request that sends username to database to be stored in username field of users table
 app.post('/sign-in/:user', (req, res) => {
   const { user } = req.params;
-  Users.create({ username: user })
+  Users.findOrCreate({
+    where: { username: user },
+    defaults: { username: user },
+  })
     .then(() => {
       res.status(201);
       res.send(user.username);
@@ -62,12 +65,12 @@ app.get('/search', (req, res) => {
           pokeData.name = response.data.name;
           pokeData.powerLevel = response.data.base_experience;
           pokeData.imageUrl = response.data.sprites.front_default;
-          pokeData.description = englishDescription;
+          pokeData.description = englishDescription[0];
           res.json(pokeData);
         });
     })
     .catch((err) => {
-      console.error('Error when getting data from api. See line 54 server/index.js', err);
+      console.error('Error when getting data from api. See line 70 server/index.js', err);
     });
 });
 
