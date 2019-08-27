@@ -23,24 +23,26 @@ const Users = sequelize.define('users', {
     allowNull: false,
   },
 }, {
-  timestamps: false,
+  freezeTableName: true,
 });
 Users.sync();
 
 // make a pokemon table
 const Pokemon = sequelize.define('pokemon', {
-  pokename: {
+  name: {
     type: Sequelize.STRING,
   },
   powerLevel: {
     type: Sequelize.INTEGER(11),
   },
-  descript: {
+  description: {
     type: Sequelize.STRING,
   },
   imageUrl: {
     type: Sequelize.STRING,
   },
+}, {
+  freezeTableName: true,
 });
 Pokemon.sync();
 
@@ -52,6 +54,8 @@ const UsersPokemon = sequelize.define('users_pokemon', {
   pokeId: {
     type: Sequelize.INTEGER(11),
   },
+}, {
+  freezeTableName: true,
 });
 UsersPokemon.sync();
 
