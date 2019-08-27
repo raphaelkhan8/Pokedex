@@ -24,6 +24,7 @@ const Users = sequelize.define('users', {
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
 Users.sync();
 
@@ -43,6 +44,7 @@ const Pokemon = sequelize.define('pokemon', {
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
 Pokemon.sync();
 
@@ -56,6 +58,7 @@ const UsersPokemon = sequelize.define('users_pokemon', {
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
 UsersPokemon.sync();
 
