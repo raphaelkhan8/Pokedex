@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 import ListItem from './ListItem.jsx';
 
-const List = ({ items }) => (
+const List = ({ pokemon }) => (
   <div>
     <h4> List Component </h4>
-    There are { items.length } items.
-    { items.map(item => <ListItem item={item} />)}
+    There are { pokemon.length } items.
+    { pokemon.map(pokeItem => <ListItem pokeItem={pokeItem} />)}
   </div>
 );
 
 List.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape({
+  pokemon: PropTypes.arrayOf(PropTypes.shape({
 
   })).isRequired,
 };
