@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 // set up the database connection
 
-const sequelize = new Sequelize('pokemon', 'root', '', {
+const sequelize = new Sequelize('pokemvp', 'root', '', {
   port: process.env.PORT || 3306,
   dialect: 'mysql',
 });
