@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, '../react-client/dist')));
 
 // route for when sign-up button is clicked
 // POST request that sends username to database to be stored in username field of users table
-app.post('/sign-in/:user', (req, res) => {
+app.post('/sign-in/:users', (req, res) => {
   const { user } = req.params;
   Users.findOrCreate({
     where: { username: user },
@@ -55,12 +55,12 @@ app.get('/search', (req, res) => {
               }
             }
           }
-          console.log(response.data);
-          console.log(response.data.name);
-          console.log(response.data.base_experience);
-          console.log(response.data.sprites.front_default);
-          console.log(englishDescription);
-          console.log('hiiii');
+          // console.log(response.data);
+          // console.log(response.data.name);
+          // console.log(response.data.base_experience);
+          // console.log(response.data.sprites.front_default);
+          // console.log(englishDescription);
+          // console.log('hiiii');
           const pokeData = {};
           pokeData.name = response.data.name;
           pokeData.powerLevel = response.data.base_experience;
@@ -79,6 +79,38 @@ app.get('/search', (req, res) => {
 
 // route for when ADD POKEMON button is clicked
 // POST request that adds the searched Pokemon to the associated user's collection
+app.post('/pokemvp/:user', (req, res) => {
+  const {
+    pokename, powerLevel, description, imageUrl,
+  } = req.body;
+  const { user } = req.params;
+  Pokemon.findOrCreate({
+    where: { pokename },
+    defaults:
+    {
+      pokename,
+      powerLevel,
+      description,
+      imageUrl,
+    },
+  }).then((pokemon) => {
+    // grab user's id, add it and pokeId to the UsersPokemon table
+    Users.findAll({
+      where: {
+        username: user,
+      },
+    })
+      .then((user) => {
+        UsersPokemon.create({ userId: user[0].id, pokeId: pokemon.id })
+          .then(() => {
+            res.status(201);
+            res.send(pokemon);
+          });
+      });
+  }).catch((err) => {
+    console.error(err);
+  });
+});
 
 // route for when BATTLE button is clicked
 // GET request that gets the first pokemon in the associated user's collection
