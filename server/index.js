@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, '../react-client/dist')));
 
 // route for when sign-up button is clicked
 // POST request that sends username to database to be stored in username field of users table
-app.post('/sign-in/:users', (req, res) => {
+app.post('/sign-in/:user', (req, res) => {
   const { user } = req.params;
   Users.findOrCreate({
     where: { username: user },
@@ -38,7 +38,7 @@ app.get('/search', (req, res) => {
   axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     // response is an object which a data property that is an object with all the data we want
     // need to get back following properties: name, base_experience, sprites and description
-    // data.species.url is another page so I need to make another get request for the description >:(
+    // data.species.url is another page so I need to make another api call for the description >:(
     .then((response) => {
       axios.get(`${response.data.species.url}`)
         .then((descriptions) => {
@@ -79,16 +79,16 @@ app.get('/search', (req, res) => {
 
 // route for when ADD POKEMON button is clicked
 // POST request that adds the searched Pokemon to the associated user's collection
-app.post('/pokemvp/:user', (req, res) => {
+app.post('/pokemvp/:users', (req, res) => {
   const {
-    pokename, powerLevel, description, imageUrl,
+    name, powerLevel, description, imageUrl,
   } = req.body;
   const { user } = req.params;
   Pokemon.findOrCreate({
-    where: { pokename },
+    where: { name },
     defaults:
     {
-      pokename,
+      name,
       powerLevel,
       description,
       imageUrl,
@@ -101,7 +101,7 @@ app.post('/pokemvp/:user', (req, res) => {
       },
     })
       .then((user) => {
-        UsersPokemon.create({ userId: user[0].id, pokeId: pokemon.id })
+        UsersPokemon.create({ userId: user.id, pokeId: pokemon.id })
           .then(() => {
             res.status(201);
             res.send(pokemon);
