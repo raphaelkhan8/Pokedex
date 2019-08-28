@@ -11,13 +11,13 @@ const List = ({ pokeItems }) => (
   <div>
     <h4> My Pokemon Collection </h4>
     There are { pokeItems.length } pokemon in your pokedex.
-    { pokeItems.map(pokeItem => <ListItem pokeItem={pokeItem} key={id} />)}
+    { pokeItems.map(pokemon => <ListItem pokemon={pokemon} key={id} />)}
   </div>
 );
 
 List.propTypes = {
   pokeItems: PropTypes.arrayOf(PropTypes.shape({
-    pokeName: PropTypes.string,
+    name: PropTypes.string,
     powerLevel: PropTypes.number,
     description: PropTypes.string,
     imageUrl: PropTypes.string,

@@ -1,19 +1,19 @@
-/* eslint-disable no-restricted-syntax */
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const sequelize = require('sequelize');
 const { Users, Pokemon, UsersPokemon } = require('../database-mysql');
 
 const app = express();
 
 // UNCOMMENT FOR REACT
 app.use(express.static(path.join(__dirname, '../react-client/dist')));
+app.use(bodyParser.json());
 
 // UNCOMMENT FOR ANGULAR
 // app.use(express.static(path.join(__dirname, '../angular-client')));
 // app.use(express.static(path.join(__dirname, '../node_modules')));
-
 
 // route for when sign-up button is clicked
 // POST request that sends username to database to be stored in username field of users table
@@ -25,7 +25,7 @@ app.post('/sign-in/:user', (req, res) => {
   })
     .then(() => {
       res.status(201);
-      res.send(user.username);
+      res.send(user);
     }).catch((err) => {
       console.error('User was not saved to the database', err);
     });
@@ -76,6 +76,48 @@ app.get('/search', (req, res) => {
 
 // route for when GET POKEMON button is clicked
 // GET request that queries the database for associated user's pokemon
+app.get('/pokemvp/:user', (req, res) => {
+  // need to find all the pokemon associated with this user and send them
+  //    thru the response as an array
+  const { user } = req.params;
+  Users.findAll({
+    where: {
+      username: user,
+    },
+  })
+    .then((userArr) => {
+      const userId = userArr[0].id;
+      // use this userId to find all PokeId's in UsersPokemon
+      UsersPokemon.findAll({
+        where: {
+          userId,
+        },
+      }).then((models) => {
+        // models is an array of model instances
+        // i want an array of just pokeId's
+        const pokeIds = [];
+        models.forEach((instance) => {
+          pokeIds.push(instance.pokeId);
+        });
+        Pokemon.findAll({
+          where: {
+            id: pokeIds,
+          },
+        }).then((pokemon) => {
+          const resArr = [];
+          pokemon.forEach((instance) => {
+            resArr.push(instance.get({ plain: true }));
+          });
+          res.status(200);
+          res.send(JSON.stringify(resArr));
+          res.end();
+        });
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
 
 // route for when ADD POKEMON button is clicked
 // POST request that adds the searched Pokemon to the associated user's collection
@@ -83,7 +125,7 @@ app.post('/pokemvp/:users', (req, res) => {
   const {
     name, powerLevel, description, imageUrl,
   } = req.body;
-  const { user } = req.params;
+  const { users } = req.params;
   Pokemon.findOrCreate({
     where: { name },
     defaults:
@@ -97,7 +139,7 @@ app.post('/pokemvp/:users', (req, res) => {
     // grab user's id, add it and pokeId to the UsersPokemon table
     Users.findAll({
       where: {
-        username: user,
+        username: users,
       },
     })
       .then((user) => {

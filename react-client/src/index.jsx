@@ -9,6 +9,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       userInput: '',
+      user: '',
       query: '',
       pokemon: {
         pokename: '',
@@ -57,7 +58,7 @@ class App extends React.Component {
     axios.post(`/sign-in/${userInput}`)
       .then((response) => {
         this.setState({
-          userInput: response.data,
+          user: response.data,
         });
       })
       .then(() => {
@@ -92,17 +93,19 @@ class App extends React.Component {
   }
 
   addPokemon() {
-    const { userInput, pokemon } = this.state;
-    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', userInput);
-    axios.post(`/pokemvp/${userInput}`, pokemon)
-      .then(() => axios.get(`/pokemvp/${userInput}`))
+    const { user, pokemon } = this.state;
+    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', user);
+    axios.post(`/pokemvp/${user}`, pokemon)
+      .then(() => axios.get(`/pokemvp/${user}`))
       .then((res) => {
         // res.data should be an array of user's pokemon
         this.setState({
           pokeItems: res.data,
         });
+      })
+      .catch((err) => {
+        console.error('addPokemon() error. See line 108 index.jsx', err);
       });
-    console.log('pokemon was added');
   }
 
   handleBattle() {
@@ -111,7 +114,7 @@ class App extends React.Component {
 
   render() {
     const {
-      userInput, query, pokemon, pokeItems,
+      user, userInput, query, pokemon, pokeItems,
     } = this.state;
 
     return (
@@ -121,13 +124,12 @@ class App extends React.Component {
           <h2>Sign In</h2>
           <input type="text" id="signin-bar" value={userInput} onChange={this.handleUserInput} />
           <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
+          <p><b>{userInput}</b> is signed-in.</p>
         </div>
-        <p><b>{userInput}</b> is signed-in.</p>
         <div id="search">
           <h2>Search for Pokemon</h2>
           <input type="text" id="search-bar" value={query} onChange={this.handleSearchInput} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
-          <button type="button" id="add-pokemon-button" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
           <div>
             {console.log('pokemon searched:', pokemon)}
             <h2>{pokemon.name}</h2>
