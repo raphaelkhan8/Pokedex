@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('db_raphael', 'raphael', 'MUqtnNsI6A2jtzuH', {
   host: 'immersion-2019-07-mvp.c7czzn38e6pr.us-east-1.rds.amazonaws.com',
-  port: process.env.PORT || 3306,
+  port: 3306,
   dialect: 'mysql',
 });
 
