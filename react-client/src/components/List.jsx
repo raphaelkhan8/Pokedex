@@ -10,8 +10,7 @@ const id = uuid.v4();
 const List = ({ pokeItems }) => (
   <div>
     <h4> My Pokemon Collection </h4>
-    There are { pokeItems.length } pokemon in your pokedex.
-    { pokeItems.map(pokemon => <ListItem pokemon={pokemon} key={id} />)}
+    { pokeItems.map(pokeItem => <ListItem pokeItem={pokeItem} key={id} />)}
   </div>
 );
 

@@ -12,7 +12,7 @@ class App extends React.Component {
       user: '',
       query: '',
       pokemon: {
-        pokename: '',
+        name: '',
         powerLevel: 0,
         description: '',
         imageUrl: '',
@@ -28,6 +28,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.handleSearch();
     // this.getItems()
     //   .then((data) => {
     //     this.setState({
@@ -65,7 +66,6 @@ class App extends React.Component {
         const { user } = this.state;
         axios.get(`/pokemvp/${user}`)
           .then((res) => {
-            // res.data should be an array of user's pokemon
             this.setState({
               pokeItems: res.data,
               userInput: '',
@@ -79,7 +79,9 @@ class App extends React.Component {
 
   handleSearch() {
     console.log('searched');
-    const { query } = this.state;
+    let { query } = this.state;
+    // api doen't like uppercase quries
+    query = query.toLowerCase();
     // Make a request for the given pokemon
     return axios.get(`/search/?name=${query}`)
       .then((res) => {
@@ -109,7 +111,7 @@ class App extends React.Component {
   }
 
   handleBattle() {
-    console.log('do something');
+    console.log('jadjksfklfjksfk');
   }
 
   render() {
@@ -132,18 +134,20 @@ class App extends React.Component {
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
           <div>
             {console.log('pokemon searched:', pokemon)}
-            <h2>{pokemon.name}</h2>
+            <h2>{pokemon.name.toUpperCase()}</h2>
             <img src={pokemon.imageUrl} alt="" />
             <p>{pokemon.description}</p>
-            <p>Power Level: {pokemon.powerLevel}</p>
-            <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
+            <h2>Power Level: {pokemon.powerLevel}</h2>
+            {/* <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button> */}
           </div>
         </div>
         <div id="battle">
           <h2>PokeBattle!!!</h2>
+          <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
           <button type="button" id="battle-button" onClick={this.handleBattle}>Catch the searched Pokemon by battling it!</button>
         </div>
         <h2>My Pokemon</h2>
+        <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
         <List pokeItems={pokeItems} />
       </div>
     );
