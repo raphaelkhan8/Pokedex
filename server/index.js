@@ -5,6 +5,7 @@ const axios = require('axios');
 const { Users, Pokemon, UsersPokemon } = require('../database-mysql');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // UNCOMMENT FOR REACT
 app.use(express.static(path.join(__dirname, '../react-client/dist')));
@@ -125,6 +126,6 @@ app.post('/pokemvp/:users', (req, res) => {
 //   });
 // });
 
-app.listen(3000, () => {
-  console.log('listening on port 3000!');
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}!`);
 });

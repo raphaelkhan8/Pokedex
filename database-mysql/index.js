@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-
 // set up the database connection
 
 const sequelize = new Sequelize('db_raphael', 'raphael', 'MUqtnNsI6A2jtzuH', {
