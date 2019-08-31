@@ -57,7 +57,7 @@ app.get('/search', (req, res) => {
     .then((response) => {
       axios.get(`${response.data.species.url}`)
         .then((descriptions) => {
-          // descriptionsArr is an array with a ton of objects each containing the pokemon's description
+          // descriptionsArr is an array with objects each containing the pokemon's description
           // but in a ton of lanhuages so need to filter by language and then en(for English)
           const descriptionsArr = descriptions.data.flavor_text_entries;
           const englishDescription = [];
