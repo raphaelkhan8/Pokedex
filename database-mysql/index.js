@@ -1,8 +1,13 @@
 const Sequelize = require('sequelize');
 // set up the database connection
 
-const sequelize = new Sequelize('db_raphael', 'raphael', 'MUqtnNsI6A2jtzuH', {
-  host: 'immersion-2019-07-mvp.c7czzn38e6pr.us-east-1.rds.amazonaws.com',
+// const sequelize = new Sequelize('db_raphael', 'raphael', 'MUqtnNsI6A2jtzuH', {
+//   host: 'immersion-2019-07-mvp.c7czzn38e6pr.us-east-1.rds.amazonaws.com',
+//   port: 3306,
+//   dialect: 'mysql',
+// });
+
+const sequelize = new Sequelize('pokemvp', 'root', '', {
   port: 3306,
   dialect: 'mysql',
 });
@@ -18,17 +23,28 @@ sequelize.authenticate()
 
 // make a Users table
 const Users = sequelize.define('users', {
+  id: {
+    type: Sequelize.INTEGER(11),
+    autoIncrement: true,
+    primaryKey: true,
+  },
   username: {
     type: Sequelize.STRING,
     allowNull: false,
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
 Users.sync();
 
 // make a pokemon table
 const Pokemon = sequelize.define('pokemon', {
+  id: {
+    type: Sequelize.INTEGER(11),
+    autoIncrement: true,
+    primaryKey: true,
+  },
   name: {
     type: Sequelize.STRING,
   },
@@ -43,20 +59,30 @@ const Pokemon = sequelize.define('pokemon', {
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
 Pokemon.sync();
 
 // make a joint users/pokemon table
 const UsersPokemon = sequelize.define('users_pokemon', {
-  userId: {
+  id: {
     type: Sequelize.INTEGER(11),
-  },
-  pokeId: {
-    type: Sequelize.INTEGER(11),
+    autoIncrement: true,
+    primaryKey: true,
   },
 }, {
   freezeTableName: true,
+  timeStamps: false,
 });
+UsersPokemon.associate = (models) => {
+  UsersPokemon.belongsTo(models.Users, {
+    foreignKey: 'userId',
+  });
+
+  UsersPokemon.belongsTo(models.Pokemon, {
+    foreignKey: 'pokeId',
+  });
+};
 UsersPokemon.sync();
 
 module.exports.Users = Users;
