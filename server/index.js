@@ -24,9 +24,23 @@ app.post('/sign-in/:user', (req, res) => {
     where: { username: user },
     defaults: { username: user },
   })
-    .then(() => {
-      res.status(201);
-      res.send(user);
+  // render user's pokemon after signing-in
+    .then((foundUser) => {
+      console.log('===================foundUser', foundUser[0]);
+      UsersPokemon.findAll({
+        where: {
+          userId: foundUser[0].id,
+        },
+        include: [Pokemon],
+      }).then((pokemons) => {
+        res.status(201);
+        res.send(pokemons);
+      })
+        .catch((err) => {
+          res.status(500).send({
+            error: err.message,
+          });
+        });
     }).catch((err) => {
       console.error('User was not saved to the database', err);
     });
@@ -82,7 +96,7 @@ app.post('/pokemvp/:users', (req, res) => {
   const {
     name, powerLevel, description, imageUrl,
   } = req.body;
-  console.log('=========here');
+  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXhere');
   const { users } = req.params;
   Pokemon.findOrCreate({
     where: { name },
@@ -123,20 +137,6 @@ app.post('/pokemvp/:users', (req, res) => {
     console.error(err);
   });
 });
-
-// route for when BATTLE button is clicked
-// GET request that gets the first pokemon in the associated user's collection
-
-// route already built for us
-// app.get('/items', (req, res) => {
-//   items.selectAll((err, data) => {
-//     if (err) {
-//       res.sendStatus(500);
-//     } else {
-//       res.json(data);
-//     }
-//   });
-// });
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}!`);
