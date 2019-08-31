@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 // UNCOMMENT FOR REACT
 app.use(express.static(path.join(__dirname, '../react-client/dist')));
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 // UNCOMMENT FOR ANGULAR
 // app.use(express.static(path.join(__dirname, '../angular-client')));
 // app.use(express.static(path.join(__dirname, '../node_modules')));
@@ -25,7 +26,7 @@ app.post('/sign-in/:user', (req, res) => {
   })
     .then(() => {
       res.status(201);
-      res.send(user.username);
+      res.send(user);
     }).catch((err) => {
       console.error('User was not saved to the database', err);
     });
@@ -47,7 +48,7 @@ app.get('/search', (req, res) => {
           const descriptionsArr = descriptions.data.flavor_text_entries;
           const englishDescription = [];
           for (let i = 0; i < descriptionsArr.length; i += 1) {
-            for (let key in descriptionsArr[i]) {
+            for (const key in descriptionsArr[i]) {
               if (key === 'language') {
                 if (descriptionsArr[i].language.name === 'en') {
                   englishDescription.push(descriptionsArr[i].flavor_text);
@@ -65,17 +66,15 @@ app.get('/search', (req, res) => {
           pokeData.name = response.data.name;
           pokeData.powerLevel = response.data.base_experience;
           pokeData.imageUrl = response.data.sprites.front_default;
-          pokeData.description = englishDescription[0];
-          res.json(pokeData);
+          [pokeData.description] = englishDescription;
+          res.send(pokeData);
         });
     })
     .catch((err) => {
-      console.error('Error when getting data from api. See line 70 server/index.js', err);
+      console.error('Error when getting data from api. See line 73 server/index.js', err);
     });
 });
 
-// route for when GET POKEMON button is clicked
-// GET request that queries the database for associated user's pokemon
 
 // route for when ADD POKEMON button is clicked
 // POST request that adds the searched Pokemon to the associated user's collection
@@ -83,6 +82,7 @@ app.post('/pokemvp/:users', (req, res) => {
   const {
     name, powerLevel, description, imageUrl,
   } = req.body;
+  console.log('=========here');
   const { users } = req.params;
   Pokemon.findOrCreate({
     where: { name },
@@ -103,6 +103,7 @@ app.post('/pokemvp/:users', (req, res) => {
       .then((user) => {
         UsersPokemon.create({ userId: user.id, pokeId: pokemon.id })
           .then(() => {
+            
             res.status(201);
             res.send(pokemon);
           });
