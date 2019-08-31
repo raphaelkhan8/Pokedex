@@ -1,13 +1,11 @@
 const Sequelize = require('sequelize');
+
 // set up the database connection
-
-// const sequelize = new Sequelize('db_raphael', 'raphael', 'MUqtnNsI6A2jtzuH', {
-//   host: 'immersion-2019-07-mvp.c7czzn38e6pr.us-east-1.rds.amazonaws.com',
-//   port: 3306,
-//   dialect: 'mysql',
-// });
-
-const sequelize = new Sequelize('pokemvp', 'root', '', {
+const {
+  dbName, dbUser, dbPass, dbHost,
+} = process.env;
+const sequelize = new Sequelize(dbName || 'pokemvp', dbUser || 'root', dbPass || '', {
+  host: dbHost,
   port: 3306,
   dialect: 'mysql',
 });
