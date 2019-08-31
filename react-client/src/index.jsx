@@ -49,7 +49,7 @@ class App extends React.Component {
     const { userInput } = this.state;
     axios.post(`/sign-in/${userInput}`)
       .then((response) => {
-        console.log("=======user", response.data);
+        console.log('=======user', response.data);
         this.setState({
           pokeItems: response.data,
           user: userInput,
