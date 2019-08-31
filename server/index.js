@@ -95,7 +95,7 @@ app.post('/pokemvp/:users', (req, res) => {
     },
   }).then(([pokemon]) => {
     // grab user's id, add it and pokeId to the UsersPokemon table
-    Users.findAll({
+    Users.findOne({
       where: {
         username: users,
       },
@@ -103,9 +103,20 @@ app.post('/pokemvp/:users', (req, res) => {
       .then((user) => {
         UsersPokemon.create({ userId: user.id, pokeId: pokemon.id })
           .then(() => {
-            
-            res.status(201);
-            res.send(pokemon);
+            UsersPokemon.findAll({
+              where: {
+                userId: user.id,
+              },
+              include: [Pokemon],
+            }).then((pokemons) => {
+              res.status(201);
+              res.send(pokemons);
+            })
+              .catch((err) => {
+                res.status(500).send({
+                  error: err.message,
+                });
+              });
           });
       });
   }).catch((err) => {
