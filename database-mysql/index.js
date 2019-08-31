@@ -36,7 +36,6 @@ const Users = sequelize.define('users', {
   freezeTableName: true,
   timeStamps: false,
 });
-Users.sync();
 
 // make a pokemon table
 const Pokemon = sequelize.define('pokemon', {
@@ -61,7 +60,6 @@ const Pokemon = sequelize.define('pokemon', {
   freezeTableName: true,
   timeStamps: false,
 });
-Pokemon.sync();
 
 // make a joint users/pokemon table
 const UsersPokemon = sequelize.define('users_pokemon', {
@@ -70,19 +68,41 @@ const UsersPokemon = sequelize.define('users_pokemon', {
     autoIncrement: true,
     primaryKey: true,
   },
+  userId: {
+    type: Sequelize.INTEGER(11),
+    allowNull: false,
+    foreignKey: true,
+    references: {
+      model: Users,
+      key: 'id',
+    },
+  },
+  pokeId: {
+    type: Sequelize.INTEGER(11),
+    allowNull: false,
+    foreignKey: true,
+    references: {
+      model: Pokemon,
+      key: 'id',
+    },
+  },
 }, {
   freezeTableName: true,
   timeStamps: false,
 });
-UsersPokemon.associate = (models) => {
-  UsersPokemon.belongsTo(models.Users, {
-    foreignKey: 'userId',
-  });
 
-  UsersPokemon.belongsTo(models.Pokemon, {
-    foreignKey: 'pokeId',
-  });
-};
+UsersPokemon.belongsTo(Users, {
+  foreignKey: 'userId',
+});
+
+UsersPokemon.belongsTo(Pokemon, {
+  foreignKey: 'pokeId',
+});
+
+Pokemon.hasMany(UsersPokemon);
+Users.hasMany(UsersPokemon);
+Users.sync();
+Pokemon.sync();
 UsersPokemon.sync();
 
 module.exports.Users = Users;
