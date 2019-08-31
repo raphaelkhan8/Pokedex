@@ -29,15 +29,6 @@ class App extends React.Component {
 
   componentDidMount() {
     this.handleSearch();
-    // this.getItems()
-    //   .then((data) => {
-    //     this.setState({
-    //       items: data,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
   }
 
   handleUserInput(event) {
@@ -58,8 +49,10 @@ class App extends React.Component {
     const { userInput } = this.state;
     axios.post(`/sign-in/${userInput}`)
       .then((response) => {
+        console.log("=======user", response.data);
         this.setState({
-          user: response.data,
+          pokeItems: response.data,
+          user: userInput,
         });
       })
       .then(() => {
@@ -73,7 +66,7 @@ class App extends React.Component {
           });
       })
       .catch((err) => {
-        console.log('Error while signing in. See line 75 index.jsx', err);
+        console.log('Error while signing in. See line 69 index.jsx', err);
       });
   }
 
@@ -90,15 +83,14 @@ class App extends React.Component {
           query: '',
         });
       }).catch((err) => {
-        console.error('Search error. See line 82 index.jsx', err);
+        console.error('Search error. See line 86 index.jsx', err);
       });
   }
 
   addPokemon() {
     const { user, pokemon } = this.state;
-    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', user);
+    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', pokemon);
     axios.post(`/pokemvp/${user}`, pokemon)
-      .then(() => axios.get(`/pokemvp/${user}`))
       .then((res) => {
         // res.data should be an array of user's pokemon
         this.setState({
@@ -106,7 +98,7 @@ class App extends React.Component {
         });
       })
       .catch((err) => {
-        console.error('addPokemon() error. See line 108 index.jsx', err);
+        console.error('addPokemon() error. See line 101 index.jsx', err);
       });
   }
 
@@ -116,7 +108,7 @@ class App extends React.Component {
 
   render() {
     const {
-      user, userInput, query, pokemon, pokeItems,
+      userInput, query, pokemon, pokeItems,
     } = this.state;
 
     return (
@@ -138,17 +130,15 @@ class App extends React.Component {
             <img src={pokemon.imageUrl} alt="" />
             <p>{pokemon.description}</p>
             <h2>Power Level: {pokemon.powerLevel}</h2>
-            {/* <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button> */}
+            <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
           </div>
         </div>
+        <h2>My Pokemon</h2>
+        <List pokeItems={pokeItems} />
         <div id="battle">
           <h2>PokeBattle!!!</h2>
           <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
-          <button type="button" id="battle-button" onClick={this.handleBattle}>Catch the searched Pokemon by battling it!</button>
         </div>
-        <h2>My Pokemon</h2>
-        <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
-        <List pokeItems={pokeItems} />
       </div>
     );
   }
