@@ -6,16 +6,16 @@ const ListItem = ({ pokeItem }) => (
     <tbody>
       <tr>
         <td>
-          <img src={pokeItem.imageUrl} alt="pokeImg" />
+          <img src={pokeItem.pokemon.imageUrl} alt="pokeImg" />
         </td>
         <td>
-          <strong>{pokeItem.name}</strong>
+          <strong>{pokeItem.pokemon.name.toUpperCase()}</strong>
         </td>
         <td>
-          <em>{pokeItem.description}</em>
+          <em>{pokeItem.pokemon.description}</em>
         </td>
         <td>
-          Base EXP: {pokeItem.baseEXP}
+          Power Level: {pokeItem.pokemon.powerLevel}
         </td>
       </tr>
     </tbody>
