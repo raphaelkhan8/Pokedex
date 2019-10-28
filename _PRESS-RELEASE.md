@@ -41,5 +41,4 @@ Go to https://pokedex777.herokuapp.com/ and search to your heart's content.
 Nostalgic Euphoria
 
 ## Closing and Call to Action
-  > Wrap it up and give pointers where the reader should go next.
-  /// Gotta catch em'all! ///
+Gotta catch em'all!
