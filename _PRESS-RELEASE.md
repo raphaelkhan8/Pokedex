@@ -17,36 +17,28 @@ Once the project moves into development, the press release can be used as a touc
  -->
 
 ## Heading
-  > Name the product in a way the reader (i.e. your target customers) will understand.
-  /// PokeDex ///
+PokeDex
 
 ## Sub-Heading
-  > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
-  /// Anyone who likes or played Pokemon ///
+An app for anyone who likes or played Pokemon.
 
 ## Summary
-  > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
-  /// There are now a total of 807 Pokemon. When did this happen? By using this app, you won't feel lost when     youngings are talking about the newest generation. /// 
+There are now a total of 807 Pokemon. When did this happen? By using this app, you won't feel lost when youngings are talking about the newest generation of Pokemonsters. 
 
 ## Problem
-  > Describe the problem your product solves.
-  /// Keeps you updated on the constantly growing number of Pokemon. ///
+Keeps you updated on the constantly growing number of Pokemon.
 
 ## Solution
-  > Describe how your product elegantly solves the problem.
-  /// Easy to use interface system that returns information on any queried Pokemon.
+Easy to use interface system that returns information on any queried Pokemon.
 
 ## Quote from You
-  > A quote from a spokesperson in your company.
-  /// A one stop shop for all of your Pokemon needs. ///
+A one stop shop for all of your Pokemon needs.
 
 ## How to Get Started
-  > Describe how easy it is to get started.
-  /// Go to the website and search to your heart's content. ///
+Go to https://pokedex777.herokuapp.com/ and search to your heart's content.
 
 ## Customer Quote
-  > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
-  /// Nostalgic Euphoria ///
+Nostalgic Euphoria
 
 ## Closing and Call to Action
   > Wrap it up and give pointers where the reader should go next.
