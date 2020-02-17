@@ -7,26 +7,19 @@ const { Users, Pokemon, UsersPokemon } = require('../database-mysql');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// UNCOMMENT FOR REACT
 app.use(express.static(path.join(__dirname, '../react-client/dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// UNCOMMENT FOR ANGULAR
-// app.use(express.static(path.join(__dirname, '../angular-client')));
-// app.use(express.static(path.join(__dirname, '../node_modules')));
-
 
 // route for when sign-up button is clicked
-// POST request that sends username to database to be stored in username field of users table
+// POST request that sends username to database to be stored in users table
 app.post('/sign-in/:user', (req, res) => {
   const { user } = req.params;
   Users.findOrCreate({
     where: { username: user },
     defaults: { username: user },
   })
-  // render user's pokemon after signing-in
     .then((foundUser) => {
-      console.log('===================foundUser', foundUser[0]);
       UsersPokemon.findAll({
         where: {
           userId: foundUser[0].id,
@@ -53,12 +46,11 @@ app.get('/search', (req, res) => {
   axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     // response is an object which a data property that is an object with all the data we want
     // need to get back following properties: name, base_experience, sprites and description
-    // data.species.url is another page so I need to make another api call for the description >:(
     .then((response) => {
       axios.get(`${response.data.species.url}`)
         .then((descriptions) => {
-          // descriptionsArr is an array with objects each containing the pokemon's description
-          // but in a ton of lanhuages so need to filter by language and then en(for English)
+          /* descriptionsArr is an array with objects each containing the pokemon's description
+          // but in a ton of languages so need to filter by language and then en(for English)
           const descriptionsArr = descriptions.data.flavor_text_entries;
           const englishDescription = [];
           for (let i = 0; i < descriptionsArr.length; i += 1) {
@@ -70,12 +62,6 @@ app.get('/search', (req, res) => {
               }
             }
           }
-          // console.log(response.data);
-          // console.log(response.data.name);
-          // console.log(response.data.base_experience);
-          // console.log(response.data.sprites.front_default);
-          // console.log(englishDescription);
-          // console.log('hiiii');
           const pokeData = {};
           pokeData.name = response.data.name;
           pokeData.powerLevel = response.data.base_experience;
@@ -96,7 +82,6 @@ app.post('/pokemvp/:users', (req, res) => {
   const {
     name, powerLevel, description, imageUrl,
   } = req.body;
-  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXhere');
   const { users } = req.params;
   Pokemon.findOrCreate({
     where: { name },
