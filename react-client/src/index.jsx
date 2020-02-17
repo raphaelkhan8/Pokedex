@@ -100,7 +100,7 @@ class App extends React.Component {
 
   render() {
     const {
-      userInput, query, pokemon, pokeItems,
+      user, userInput, query, pokemon, pokeItems,
     } = this.state;
 
     return (
@@ -110,7 +110,7 @@ class App extends React.Component {
           <h2>Sign In</h2>
           <input type="text" id="signin-bar" value={userInput} onChange={this.handleUserInput} />
           <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
-          <p><b>{userInput}</b> is signed-in.</p>
+          <p><b>{user}</b> is signed-in.</p>
         </div>
         <div id="search">
           <h2>Search for Pokemon</h2>
