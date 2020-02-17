@@ -38,14 +38,12 @@ class App extends React.Component {
   }
 
   handleSearchInput(event) {
-    console.log(event.target.value);
     this.setState({
       query: event.target.value,
     });
   }
 
   handleSignIn() {
-    console.log('Is this the input user?');
     const { userInput } = this.state;
     axios.post(`/sign-in/${userInput}`)
       .then((response) => {
@@ -71,7 +69,6 @@ class App extends React.Component {
   }
 
   handleSearch() {
-    console.log('searched');
     let { query } = this.state;
     // api doen't like uppercase quries
     query = query.toLowerCase();
@@ -89,7 +86,6 @@ class App extends React.Component {
 
   addPokemon() {
     const { user, pokemon } = this.state;
-    console.log('USER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', pokemon);
     axios.post(`/pokemvp/${user}`, pokemon)
       .then((res) => {
         // res.data should be an array of user's pokemon
@@ -100,10 +96,6 @@ class App extends React.Component {
       .catch((err) => {
         console.error('addPokemon() error. See line 101 index.jsx', err);
       });
-  }
-
-  handleBattle() {
-    console.log('jadjksfklfjksfk');
   }
 
   render() {
@@ -125,7 +117,6 @@ class App extends React.Component {
           <input type="text" id="search-bar" value={query} onChange={this.handleSearchInput} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
           <div>
-            {console.log('pokemon searched:', pokemon)}
             <h2>{pokemon.name.toUpperCase()}</h2>
             <img src={pokemon.imageUrl} alt="" />
             <p>{pokemon.description}</p>
@@ -134,7 +125,8 @@ class App extends React.Component {
           </div>
         </div>
         <h2>My Pokemon</h2>
-        <List pokeItems={pokeItems} />
+        {pokeItems.length ?
+        (<List pokeItems={pokeItems} />) : (<div>You don't have any Pokemon. Search for one and add it to your collection.</div>)}
         <div id="battle">
           <h2>PokeBattle!!!</h2>
           <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
