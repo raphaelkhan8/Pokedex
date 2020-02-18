@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const {
   dbName, dbUser, dbPass, dbHost,
 } = process.env;
-const sequelize = new Sequelize(dbName || 'pokemvp', dbUser || 'root', dbPass || '', {
+const sequelize = new Sequelize(dbName, dbUser, dbPass, {
   host: dbHost,
   port: 3306,
   dialect: 'mysql',
