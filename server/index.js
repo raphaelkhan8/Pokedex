@@ -29,11 +29,6 @@ app.post('/sign-in/:user', (req, res) => {
         res.status(201);
         res.send(pokemons);
       })
-        .catch((err) => {
-          res.status(500).send({
-            error: err.message,
-          });
-        });
     }).catch((err) => {
       console.error('User was not saved to the database', err);
     });
@@ -71,7 +66,7 @@ app.get('/search', (req, res) => {
         });
     })
     .catch((err) => {
-      console.error('Error when getting data from api. See line 73 server/index.js', err);
+      console.error('Error when getting data from api.', err);
     });
 });
 
@@ -111,11 +106,6 @@ app.post('/pokemvp/:users', (req, res) => {
               res.status(201);
               res.send(pokemons);
             })
-              .catch((err) => {
-                res.status(500).send({
-                  error: err.message,
-                });
-              });
           });
       });
   }).catch((err) => {
