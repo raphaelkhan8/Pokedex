@@ -6,7 +6,6 @@ import ListItem from './ListItem.jsx';
 
 const List = ({ pokeItems }) => (
   <div>
-    <h4> My Pokemon Collection </h4>
     {
       pokeItems.map((pokeItem) => {
         // import uuid to generate random key for each pokeItem
