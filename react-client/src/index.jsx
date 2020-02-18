@@ -9,6 +9,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       userInput: '',
+      searched: false,
       user: '',
       query: '',
       pokemon: {
@@ -19,8 +20,7 @@ class App extends React.Component {
       },
       pokeItems: [],
     };
-    this.handleUserInput = this.handleUserInput.bind(this);
-    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleInput = this.handleInput.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleBattle = this.handleBattle.bind(this);
@@ -31,23 +31,21 @@ class App extends React.Component {
     this.handleSearch();
   }
 
-  handleUserInput(event) {
+  handleInput(event) {
+    (event.target.id === "signin-bar") ? 
     this.setState({
       userInput: event.target.value,
-    });
-  }
-
-  handleSearchInput(event) {
+    }) : 
     this.setState({
       query: event.target.value,
     });
   }
 
+
   handleSignIn() {
     const { userInput } = this.state;
     axios.post(`/sign-in/${userInput}`)
       .then((response) => {
-        console.log('=======user', response.data);
         this.setState({
           pokeItems: response.data,
           user: userInput,
@@ -64,11 +62,12 @@ class App extends React.Component {
           });
       })
       .catch((err) => {
-        console.log('Error while signing in. See line 69 index.jsx', err);
+        console.error('Error while signing in.', err);
       });
   }
 
   handleSearch() {
+    console.log('searched');
     let { query } = this.state;
     // api doen't like uppercase quries
     query = query.toLowerCase();
@@ -76,11 +75,12 @@ class App extends React.Component {
     return axios.get(`/search/?name=${query}`)
       .then((res) => {
         this.setState({
-          pokemon: res.data,
+          pokemon: res.data ,
+          searched: true,
           query: '',
         });
       }).catch((err) => {
-        console.error('Search error. See line 86 index.jsx', err);
+        console.error('Search error.', err);
       });
   }
 
@@ -91,40 +91,48 @@ class App extends React.Component {
         // res.data should be an array of user's pokemon
         this.setState({
           pokeItems: res.data,
+          searched: false
         });
       })
       .catch((err) => {
-        console.error('addPokemon() error. See line 101 index.jsx', err);
+        console.error('Adding Pokemon error', err);
       });
+  }
+
+  handleBattle() {
+    console.log('jadjksfklfjksfk');
   }
 
   render() {
     const {
-      user, userInput, query, pokemon, pokeItems,
+      searched, user, userInput, query, pokemon, pokeItems,
     } = this.state;
 
     return (
       <div>
         <h1>PokeDex</h1>
-        <div id="sign-in">
+        {!user.length ?
+        (<div id="sign-in">
           <h2>Sign In</h2>
-          <input type="text" id="signin-bar" value={userInput} onChange={this.handleUserInput} />
+          <input type="text" id="signin-bar" value={userInput} onChange={this.handleInput} />
           <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
-          <p><b>{user}</b> is signed-in.</p>
-        </div>
+        </div>) : (<p><b>{user}</b> is signed-in.</p>)}
         <div id="search">
           <h2>Search for Pokemon</h2>
-          <input type="text" id="search-bar" value={query} onChange={this.handleSearchInput} />
+          <input type="text" id="search-bar" value={query} onChange={this.handleInput} />
           <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
-          <div>
+            {searched ? (
+            <div>
             <h2>{pokemon.name.toUpperCase()}</h2>
             <img src={pokemon.imageUrl} alt="" />
             <p>{pokemon.description}</p>
             <h2>Power Level: {pokemon.powerLevel}</h2>
             <button type="button" id="button-add-list" onClick={this.addPokemon}>Add Pokemon to My Collection</button>
-          </div>
+            </div>
+            ) : 
+            (<div></div>)}
         </div>
-        <h2>My Pokemon</h2>
+        {user.length ? (<h2>{user}'s Pokemon</h2>) : <h2>My Pokemon</h2>}
         {pokeItems.length ?
         (<List pokeItems={pokeItems} />) : (<div>You don't have any Pokemon. Search for one and add it to your collection.</div>)}
         <div id="battle">
