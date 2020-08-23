@@ -10,11 +10,13 @@ class App extends React.Component {
     this.state = {
       userInput: '',
       searched: false,
+      hasError: false,
       userId: '',
       username: '',
       query: '',
       pokemon: {
         name: '',
+        type: '',
         powerLevel: 0,
         description: '',
         imageUrl: '',
@@ -24,7 +26,6 @@ class App extends React.Component {
     this.handleInput = this.handleInput.bind(this);
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-    // this.handleBattle = this.handleBattle.bind(this);
     this.addPokemon = this.addPokemon.bind(this);
   }
 
@@ -33,6 +34,10 @@ class App extends React.Component {
     if (query.length) {
       this.handleSearch();
     }
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
   }
 
   handleInput(event) {
@@ -71,11 +76,17 @@ class App extends React.Component {
     query = query.toLowerCase();
     return axios.get(`/search/?name=${query}`)
       .then((res) => {
-        this.setState({
-          pokemon: res.data,
-          searched: true,
-          query: '',
-        });
+        if (!res.data) {
+          this.setState({
+            hasError: true,
+          });
+        } else {
+          this.setState({
+            pokemon: res.data,
+            searched: true,
+            query: '',
+          });
+        }
       }).catch((err) => {
         console.error('Search error.', err);
       });
@@ -83,9 +94,12 @@ class App extends React.Component {
 
   addPokemon() {
     const { userId, pokemon, pokeItems } = this.state;
-    const leadPokemon = pokeItems[0];
+    let leadName;
+    const leadPokemon = pokeItems[0] || { pokemon: { powerLevel: 1000 } };
     const pokemonName = pokemon.name[0].toUpperCase().concat(pokemon.name.slice(1));
-    const leadName = leadPokemon.pokemon.name[0].toUpperCase().concat(leadPokemon.pokemon.name.slice(1));
+    if (pokeItems.length) {
+      leadName = leadPokemon.pokemon.name[0].toUpperCase().concat(leadPokemon.pokemon.name.slice(1));
+    }
     axios.post('/pokebattle', { userId, pokemon, leadPokemon })
       .then((res) => {
         (res.data[0] === 'Caught!') ? window.alert(`Congrats! You caught ${pokemonName}`)
@@ -102,46 +116,48 @@ class App extends React.Component {
 
   render() {
     const {
-      searched, username, userInput, query, pokemon, pokeItems,
+      searched, hasError, username, userInput, query, pokemon, pokeItems,
     } = this.state;
 
-    return (
-      <div>
-        <h1>PokeDex</h1>
-        {!username.length
-          ? (
-            <div id="sign-in">
-              <h2>Sign In</h2>
-              <input type="text" id="signin-bar" value={userInput} onChange={this.handleInput} />
-              <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
-            </div>
-          ) : (<p><b>{username}</b> is signed-in.</p>)}
-        <div id="search">
-          <h2>Search for Pokemon</h2>
-          <input type="text" id="search-bar" value={query} onChange={this.handleInput} />
-          <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
-          {searched
+    return (hasError) ? <h2>Sorry, your query is not a Pokemon. Refresh the page to try again.</h2>
+      : (
+        <div>
+          <h1>PokeDex</h1>
+          {!username.length
             ? (
-              <div>
-                <h2>{pokemon.name.toUpperCase()}</h2>
-                <img src={pokemon.imageUrl} alt="" />
-                <p>{pokemon.description}</p>
-                <h2>Power Level: {pokemon.powerLevel}</h2>
-                <button type="button" id="button-add-list" onClick={this.addPokemon}>Battle Pokemon to Add to my Party</button>
+              <div id="sign-in">
+                <h2>Sign In</h2>
+                <input type="text" id="signin-bar" value={userInput} onChange={this.handleInput} />
+                <button type="button" id="signin-button" onClick={this.handleSignIn}>Sign In</button>
               </div>
-            )
-            : (<div />)}
+            ) : (<p><b>{username}</b> is signed-in.</p>)}
+          <div id="search">
+            <h2>Search for Pokemon</h2>
+            <input type="text" id="search-bar" value={query} onChange={this.handleInput} />
+            <button type="button" id="search-button" onClick={this.handleSearch}>Search</button>
+            {searched
+              ? (
+                <div>
+                  <h2>{pokemon.name.toUpperCase()}</h2>
+                  <img src={pokemon.imageUrl} alt="" />
+                  <p>{pokemon.description}</p>
+                  <h2>Type: {pokemon.type.toUpperCase()}</h2>
+                  <h2>Power Level: {pokemon.powerLevel}</h2>
+                  <button type="button" id="button-add-list" onClick={this.addPokemon}>Battle Pokemon to Add to my Party</button>
+                </div>
+              )
+              : (<div />)}
+          </div>
+          {username.length ? (<h2>{username}'s Pokemon</h2>) : <h2>My Pokemon</h2>}
+          {pokeItems.length
+            ? (<List pokeItems={pokeItems} />)
+            : (<div>You do not have any Pokemon. Search for one and add it to your collection.</div>)}
+          <div id="battle">
+            <h2>PokeTrade!!!</h2>
+            <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
+          </div>
         </div>
-        {username.length ? (<h2>{username}'s Pokemon</h2>) : <h2>My Pokemon</h2>}
-        {pokeItems.length
-          ? (<List pokeItems={pokeItems} />)
-          : (<div>You do not have any Pokemon. Search for one and add it to your collection.</div>)}
-        <div id="battle">
-          <h2>PokeTrade!!!</h2>
-          <img src="https://66.media.tumblr.com/cfd1b3a8a2fea38a086a0bf4549b0c3d/tumblr_p27s4aXmVE1s0dt2ao1_250.gif" alt="" />
-        </div>
-      </div>
-    );
+      );
   }
 }
 
