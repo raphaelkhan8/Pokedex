@@ -26,6 +26,9 @@ const Pokemon = sequelize.define('pokemon', {
   name: {
     type: Sequelize.STRING,
   },
+  type: {
+    type: Sequelize.STRING,
+  },
   powerLevel: {
     type: Sequelize.INTEGER(11),
   },
