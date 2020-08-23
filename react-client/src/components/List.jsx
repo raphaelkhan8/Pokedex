@@ -9,8 +9,9 @@ const List = ({ pokeItems }) => (
     {
       pokeItems.map((pokeItem) => {
         // import uuid to generate random key for each pokeItem
+        const { pokemon } = pokeItem;
         const id = uuid.v4();
-        return (<ListItem pokeItem={pokeItem} key={id} />);
+        return (<ListItem pokeItem={pokemon} key={id} />);
       })
     }
   </div>
