@@ -6,16 +6,19 @@ const ListItem = ({ pokeItem }) => (
     <tbody>
       <tr>
         <td>
-          <img src={pokeItem.pokemon.imageUrl} alt="pokeImg" />
+          <img src={pokeItem.imageUrl} alt="pokeImg" />
         </td>
         <td>
-          <strong>{pokeItem.pokemon.name.toUpperCase()}</strong>
+          <strong>{pokeItem.name.toUpperCase()}</strong>
         </td>
         <td>
-          <em>{pokeItem.pokemon.description}</em>
+          <em>{pokeItem.description}</em>
         </td>
         <td>
-          Power Level: {pokeItem.pokemon.powerLevel}
+          Type: {pokeItem.type.toUpperCase()}
+        </td>
+        <td>
+          Power Level: {pokeItem.powerLevel}
         </td>
       </tr>
     </tbody>
@@ -27,6 +30,7 @@ ListItem.propTypes = {
     powerLevel: PropTypes.number,
     description: PropTypes.string,
     imageUrl: PropTypes.string,
+    type: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
 };
