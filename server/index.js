@@ -2,8 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
-const { userRouter } = require('./routes/users');
-const { pokeRouter } = require('./routes/pokemon');
+const { userRouter, pokeRouter } = require('./router');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
