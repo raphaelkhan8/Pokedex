@@ -21,25 +21,25 @@ const searchPokemon = query => axios.get(`https://pokeapi.co/api/v2/pokemon/${qu
         const randomIndex = Math.floor(Math.random() * arrLength);
         const englishDescription = englishArr[randomIndex].flavor_text;
         pokeData.name = response.data.name;
+        pokeData.type = response.data.types[0].type.name;
         pokeData.powerLevel = response.data.base_experience;
         pokeData.imageUrl = response.data.sprites.front_default;
         pokeData.description = englishDescription;
         return pokeData;
-      });
+      })
+      .catch(err => console.error(err));
   });
-
-const battle = (poke1, poke2) => ((poke1.powerLevel > poke2.pokemon.powerLevel)
-  ? poke1 : poke2.pokemon);
 
 const addPokemonToCollection = (userId, pokemon) => {
   const {
-    name, powerLevel, description, imageUrl,
+    name, type, powerLevel, description, imageUrl,
   } = pokemon;
   return Pokemon.findOrCreate({
     where: { name },
     defaults:
       {
         name,
+        type,
         powerLevel,
         description,
         imageUrl,
@@ -64,5 +64,4 @@ const addPokemonToCollection = (userId, pokemon) => {
 
 module.exports.getUserPokemon = getUserPokemon;
 module.exports.searchPokemon = searchPokemon;
-module.exports.battle = battle;
 module.exports.addPokemonToCollection = addPokemonToCollection;
