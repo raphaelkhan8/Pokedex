@@ -1,7 +1,8 @@
 const express = require('express');
 const {
-  getUserPokemon, searchPokemon, battle, addPokemonToCollection,
+  getUserPokemon, searchPokemon, addPokemonToCollection,
 } = require('../helpers/pokeHelpers');
+const { battle, gainBattleExperience } = require('../helpers/battleHelpers');
 
 const router = new express.Router();
 
@@ -14,18 +15,20 @@ router.get('/pokemon/:id', (req, res) => {
 router.get('/search', (req, res) => {
   const { name } = req.query;
   searchPokemon(name).then(pokeData => res.send(pokeData))
-    .catch(err => console.error('Error when getting data from api.', err));
+    .catch(err => res.status(404).send(err));
 });
 
-// route for when ADD POKEMON button is clicked
 router.post('/pokebattle', (req, res) => {
   const { pokemon, leadPokemon, userId } = req.body;
   const victorPokemon = battle(pokemon, leadPokemon);
   if (victorPokemon.name !== pokemon.name) {
-    addPokemonToCollection(userId, pokemon).then(() => {
-      getUserPokemon(userId).then((pokeCollection) => {
-        pokeCollection.unshift('Caught!');
-        res.send(pokeCollection);
+    gainBattleExperience(leadPokemon).then((pokeLevelGain) => {
+      addPokemonToCollection(userId, pokemon).then(() => {
+        getUserPokemon(userId).then((pokeCollection) => {
+          pokeCollection.push(pokeLevelGain);
+          pokeCollection.unshift('Caught!');
+          res.send(pokeCollection);
+        });
       })
         .catch(err => console.error(err));
     });
