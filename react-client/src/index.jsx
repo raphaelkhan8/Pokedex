@@ -27,6 +27,7 @@ class App extends React.Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.addPokemon = this.addPokemon.bind(this);
+    this.changeLeadPokemon = this.changeLeadPokemon.bind(this);
   }
 
   componentDidMount() {
@@ -102,16 +103,27 @@ class App extends React.Component {
     }
     axios.post('/pokebattle', { userId, pokemon, leadPokemon })
       .then((res) => {
-        (res.data[0] === 'Caught!') ? window.alert(`Congrats! You caught ${pokemonName}`)
+        const battleMessage = res.data[0];
+        const battleExperience = res.data[res.data.length - 1];
+        (battleMessage === 'Caught!') ? window.alert(`Congrats! You caught ${pokemonName} \n${leadName} gained ${battleExperience} powerLevel points!`)
           : window.alert(`${leadName} fainted D: \n${pokemonName} was too strong :(`);
         this.setState({
-          pokeItems: res.data.slice(1),
+          pokeItems: res.data.slice(1, res.data.length - 1),
           searched: false,
         });
       })
       .catch((err) => {
         console.error('Adding Pokemon error', err);
       });
+  }
+
+  changeLeadPokemon() {
+    const { pokeItems } = this.state;
+    const prevLead = pokeItems.shift();
+    pokeItems.push(prevLead);
+    this.setState({
+      pokeItems,
+    });
   }
 
   render() {
@@ -149,6 +161,10 @@ class App extends React.Component {
               : (<div />)}
           </div>
           {username.length ? (<h2>{username}'s Pokemon</h2>) : <h2>My Pokemon</h2>}
+          {(username.length && pokeItems.length > 1)
+            ? (<div>Lead Pokemon: {pokeItems.map(poke => poke.pokemon.name)[0]}</div>
+            && <button type="button" onClick={this.changeLeadPokemon}>Change Lead Pokemon</button>)
+            : (<div> </div>)}
           {pokeItems.length
             ? (<List pokeItems={pokeItems} />)
             : (<div>You do not have any Pokemon. Search for one and add it to your collection.</div>)}
