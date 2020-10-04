@@ -40,8 +40,10 @@ router.post("/pokebattle", (req, res) => {
             addPokemonToCollection(userId, pokemon)
                 .then(() => {
                     getUserPokemon(userId).then((pokeCollection) => {
-                        pokeCollection.push(pokeLevelGain);
-                        pokeCollection.unshift("Caught!");
+                        pokeCollection.unshift({
+                            message: "Caught!",
+                            experience: pokeLevelGain,
+                        });
                         res.send(pokeCollection);
                     });
                 })
