@@ -11,7 +11,9 @@ const router = new express.Router();
 router.get("/pokemon/:id", (req, res) => {
     const { id } = req.params;
     getUserPokemon(id)
-        .then((pokeCollection) => res.send(pokeCollection))
+        .then((pokeCollection) => {
+            res.send(pokeCollection);
+        })
         .catch((err) => console.error(err));
 });
 

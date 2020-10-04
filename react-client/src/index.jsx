@@ -48,7 +48,7 @@ class App extends React.Component {
     }
 
     handleSignIn() {
-        const { userInput, pokeItems } = this.state;
+        const { userInput } = this.state;
         axios
             .post("/sign-in", { userInput })
             .then((response) => {
@@ -62,7 +62,7 @@ class App extends React.Component {
                 const { id } = respo.data;
                 axios.get(`/pokemon/${id}`).then((res) => {
                     this.setState({
-                        pokeItems: pokeItems.push(res.data.pokemon),
+                        pokeItems: res.data,
                         userInput: "",
                     });
                 });
