@@ -48,7 +48,7 @@ class App extends React.Component {
     }
 
     handleSignIn() {
-        const { userInput } = this.state;
+        const { userInput, pokeItems } = this.state;
         axios
             .post("/sign-in", { userInput })
             .then((response) => {
@@ -62,7 +62,7 @@ class App extends React.Component {
                 const { id } = respo.data;
                 axios.get(`/pokemon/${id}`).then((res) => {
                     this.setState({
-                        pokeItems: res.data,
+                        pokeItems: pokeItems.push(res.data.pokemon),
                         userInput: "",
                     });
                 });
@@ -97,39 +97,38 @@ class App extends React.Component {
 
     addPokemon() {
         const { userId, pokemon, pokeItems } = this.state;
+        const leadPokemon = pokeItems[0] || pokemon;
+        const pokemonName = pokemon.name[0]
+            .toUpperCase()
+            .concat(pokemon.name.slice(1));
         if (!pokeItems.length) {
             axios.post("/firstPokemon", { userId, pokemon }).then((res) => {
                 const message = res.data[0];
+                const pokeMon = res.data.slice(1);
                 window.alert(message);
                 this.setState({
-                    pokeItems: res.data.slice(1, res.data.length - 1),
+                    pokeItems: pokeMon,
                     searched: false,
                 });
             });
         } else {
-            const leadPokemon = pokeItems[0] || {
-                pokemon: { powerLevel: 1000 },
-            };
             const leadName = leadPokemon.pokemon.name[0]
                 .toUpperCase()
                 .concat(leadPokemon.pokemon.name.slice(1));
-            const pokemonName = pokemon.name[0]
-                .toUpperCase()
-                .concat(pokemon.name.slice(1));
             axios
                 .post("/pokebattle", { userId, pokemon, leadPokemon })
                 .then((res) => {
-                    const battleMessage = res.data[0];
-                    const battleExperience = res.data[res.data.length - 1];
-                    battleMessage === "Caught!"
+                    const battleResult = res.data[0];
+                    const pokeMon = res.data.slice(1);
+                    battleResult.message === "Caught!"
                         ? window.alert(
-                              `Congrats! You caught ${pokemonName} \n${leadName} gained ${battleExperience} powerLevel points!`
+                              `Congrats! You caught ${pokemonName} \n${leadName} gained ${battleResult.experience} powerLevel points!`
                           )
                         : window.alert(
                               `${leadName} fainted D: \n${pokemonName} was too strong :(`
                           );
                     this.setState({
-                        pokeItems: res.data.slice(1, res.data.length - 1),
+                        pokeItems: pokeMon,
                         searched: false,
                     });
                 })
@@ -228,7 +227,7 @@ class App extends React.Component {
                 ) : (
                     <h2>My Pokemon</h2>
                 )}
-                {username.length && pokeItems.length > 1 ? (
+                {username.length && pokeItems.length > 0 ? (
                     (
                         <div>
                             Lead Pokemon:{" "}
