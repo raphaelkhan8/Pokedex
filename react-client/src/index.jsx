@@ -123,13 +123,11 @@ class App extends React.Component {
                 .then((res) => {
                     const battleResult = res.data[0];
                     const pokeMon = res.data.slice(1);
+                    const winText = `Congrats! You caught ${pokemonName}. ${leadName} gained ${battleResult.experience} powerLevel points!`;
+                    const lossText = `${leadName} fainted! ${pokemonName} was too strong :(`;
                     battleResult.message === "Caught!"
-                        ? Swal.fire({
-                              text: `Congrats! You caught ${pokemonName} \n${leadName} gained ${battleResult.experience} powerLevel points!`,
-                          })
-                        : Swal.fire({
-                              text: `${leadName} fainted D: \n${pokemonName} was too strong :(`,
-                          });
+                        ? Swal.fire({ text: winText })
+                        : Swal.fire({ text: lossText });
                     this.setState({
                         pokeItems: pokeMon,
                         searched: false,
