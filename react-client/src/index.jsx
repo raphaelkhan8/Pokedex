@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import List from "./components/List.jsx";
 
@@ -105,7 +106,9 @@ class App extends React.Component {
             axios.post("/firstPokemon", { userId, pokemon }).then((res) => {
                 const message = res.data[0];
                 const pokeMon = res.data.slice(1);
-                window.alert(message);
+                Swal.fire({
+                    text: message,
+                });
                 this.setState({
                     pokeItems: pokeMon,
                     searched: false,
@@ -121,12 +124,12 @@ class App extends React.Component {
                     const battleResult = res.data[0];
                     const pokeMon = res.data.slice(1);
                     battleResult.message === "Caught!"
-                        ? window.alert(
-                              `Congrats! You caught ${pokemonName} \n${leadName} gained ${battleResult.experience} powerLevel points!`
-                          )
-                        : window.alert(
-                              `${leadName} fainted D: \n${pokemonName} was too strong :(`
-                          );
+                        ? Swal.fire({
+                              text: `Congrats! You caught ${pokemonName} \n${leadName} gained ${battleResult.experience} powerLevel points!`,
+                          })
+                        : Swal.fire({
+                              text: `${leadName} fainted D: \n${pokemonName} was too strong :(`,
+                          });
                     this.setState({
                         pokeItems: pokeMon,
                         searched: false,
@@ -164,7 +167,19 @@ class App extends React.Component {
                 again.
             </h2>
         ) : (
-            <div>
+            <div
+                className="main"
+                style={{
+                    color: "gold",
+                    textAlign: "center",
+                    width: "100%",
+                    height: "100%",
+                    display: "block",
+                    position: "relative",
+                    background:
+                        'url("https://www.ssbwiki.com/images/7/73/SSBU-Pok%C3%A9mon_Stadium_2.png") no-repeat center center fixed',
+                }}
+            >
                 <h1>PokeDex</h1>
                 {!username.length ? (
                     <div id="sign-in">
