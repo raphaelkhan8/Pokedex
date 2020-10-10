@@ -26,6 +26,7 @@ class App extends React.Component {
         };
         this.handleInput = this.handleInput.bind(this);
         this.handleSignIn = this.handleSignIn.bind(this);
+        this.handleLogOut = this.handleLogOut.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
         this.addPokemon = this.addPokemon.bind(this);
         this.changeLeadPokemon = this.changeLeadPokemon.bind(this);
@@ -36,10 +37,6 @@ class App extends React.Component {
         if (query.length) {
             this.handleSearch();
         }
-    }
-
-    static getDerivedStateFromError(error) {
-        return { hasError: true };
     }
 
     handleInput(event) {
@@ -73,6 +70,14 @@ class App extends React.Component {
             });
     }
 
+    handleLogOut() {
+        this.setState({
+            userId: "",
+            username: "",
+            pokeItems: [],
+        });
+    }
+
     handleSearch() {
         let { query } = this.state;
         query = query.toLowerCase();
@@ -102,40 +107,44 @@ class App extends React.Component {
         const pokemonName = pokemon.name[0]
             .toUpperCase()
             .concat(pokemon.name.slice(1));
-        if (!pokeItems.length) {
-            axios.post("/firstPokemon", { userId, pokemon }).then((res) => {
-                const message = res.data[0];
-                const pokeMon = res.data.slice(1);
-                Swal.fire({
-                    text: message,
-                });
-                this.setState({
-                    pokeItems: pokeMon,
-                    searched: false,
-                });
-            });
-        } else {
-            const leadName = leadPokemon.pokemon.name[0]
-                .toUpperCase()
-                .concat(leadPokemon.pokemon.name.slice(1));
-            axios
-                .post("/pokebattle", { userId, pokemon, leadPokemon })
-                .then((res) => {
-                    const battleResult = res.data[0];
+        if (userId) {
+            if (!pokeItems.length) {
+                axios.post("/firstPokemon", { userId, pokemon }).then((res) => {
+                    const message = res.data[0];
                     const pokeMon = res.data.slice(1);
-                    const winText = `Congrats! You caught ${pokemonName}. ${leadName} gained ${battleResult.experience} powerLevel points!`;
-                    const lossText = `${leadName} fainted! ${pokemonName} was too strong :(`;
-                    battleResult.message === "Caught!"
-                        ? Swal.fire({ text: winText })
-                        : Swal.fire({ text: lossText });
+                    Swal.fire({
+                        text: message,
+                    });
                     this.setState({
                         pokeItems: pokeMon,
                         searched: false,
                     });
-                })
-                .catch((err) => {
-                    console.error("Adding Pokemon error", err);
                 });
+            } else {
+                const leadName = leadPokemon.pokemon.name[0]
+                    .toUpperCase()
+                    .concat(leadPokemon.pokemon.name.slice(1));
+                axios
+                    .post("/pokebattle", { userId, pokemon, leadPokemon })
+                    .then((res) => {
+                        const battleResult = res.data[0];
+                        const pokeMon = res.data.slice(1);
+                        const winText = `Congrats! You caught ${pokemonName}. ${leadName} gained ${battleResult.experience} powerLevel points!`;
+                        const lossText = `${leadName} fainted! ${pokemonName} was too strong :(`;
+                        battleResult.message === "Caught!"
+                            ? Swal.fire({ text: winText })
+                            : Swal.fire({ text: lossText });
+                        this.setState({
+                            pokeItems: pokeMon,
+                            searched: false,
+                        });
+                    })
+                    .catch((err) => {
+                        console.error("Adding Pokemon error", err);
+                    });
+            }
+        } else {
+            Swal.fire("Please login before attempting to catch a Pokemon.");
         }
     }
 
@@ -199,6 +208,13 @@ class App extends React.Component {
                 ) : (
                     <p>
                         <b>{username}</b> is signed-in.
+                        <button
+                            type="button"
+                            id="logout-button"
+                            onClick={this.handleLogOut}
+                        >
+                            Log Out
+                        </button>
                     </p>
                 )}
                 <div id="search">
